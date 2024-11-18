@@ -117,8 +117,7 @@ class PdfPreviewCustom extends StatefulWidget {
   PdfPreviewCustomState createState() => PdfPreviewCustomState();
 }
 
-class PdfPreviewCustomState extends State<PdfPreviewCustom>
-    with PdfPreviewRaster {
+class PdfPreviewCustomState extends State<PdfPreviewCustom> with PdfPreviewRaster {
   final listView = GlobalKey();
 
   List<GlobalKey> _pageGlobalKeys = <GlobalKey>[];
@@ -157,9 +156,7 @@ class PdfPreviewCustomState extends State<PdfPreviewCustom>
 
   @override
   void didUpdateWidget(covariant PdfPreviewCustom oldWidget) {
-    if (oldWidget.build != widget.build ||
-        widget.shouldRepaint ||
-        widget.pageFormat != oldWidget.pageFormat) {
+    if (oldWidget.build != widget.build || widget.shouldRepaint || widget.pageFormat != oldWidget.pageFormat) {
       preview = null;
       updatePosition = null;
       raster();
@@ -192,8 +189,7 @@ class PdfPreviewCustomState extends State<PdfPreviewCustom>
     int index, {
     Duration duration = const Duration(milliseconds: 300),
     Curve curve = Curves.ease,
-    ScrollPositionAlignmentPolicy alignmentPolicy =
-        ScrollPositionAlignmentPolicy.explicit,
+    ScrollPositionAlignmentPolicy alignmentPolicy = ScrollPositionAlignmentPolicy.explicit,
   }) {
     assert(index >= 0, 'Index of page cannot be negative');
     final pageContext = _pageGlobalKeys[index].currentContext;
@@ -243,15 +239,15 @@ class PdfPreviewCustomState extends State<PdfPreviewCustom>
     }
 
     Widget pageWidget(int index, {Key? key}) => GestureDetector(
-          onDoubleTap: () {
-            setState(() {
-              updatePosition = scrollController.position.pixels;
-              preview = index;
-              transformationController.value.setIdentity();
-              _updateCursor(SystemMouseCursors.grab);
-            });
-            _zoomChanged();
-          },
+          // onDoubleTap: () {
+          //   // setState(() {
+          //   //   updatePosition = scrollController.position.pixels;
+          //   //   preview = index;
+          //   //   transformationController.value.setIdentity();
+          //   //   _updateCursor(SystemMouseCursors.grab);
+          //   // });
+          //   // _zoomChanged();
+          // },
           child: PdfPreviewPage(
             key: key,
             pageData: pages[index],
@@ -287,22 +283,19 @@ class PdfPreviewCustomState extends State<PdfPreviewCustom>
 
   Widget _zoomPreview() {
     final zoomPreview = GestureDetector(
-      onDoubleTap: () {
-        setState(() {
-          preview = null;
-          _updateCursor(MouseCursor.defer);
-        });
-        _zoomChanged();
-      },
-      onLongPressCancel:
-          kIsWeb ? () => _updateCursor(SystemMouseCursors.grab) : null,
-      onLongPressDown:
-          kIsWeb ? (_) => _updateCursor(SystemMouseCursors.grabbing) : null,
+      // onDoubleTap: () {
+      //   setState(() {
+      //     preview = null;
+      //     _updateCursor(MouseCursor.defer);
+      //   });
+      //   _zoomChanged();
+      // },
+      onLongPressCancel: kIsWeb ? () => _updateCursor(SystemMouseCursors.grab) : null,
+      onLongPressDown: kIsWeb ? (_) => _updateCursor(SystemMouseCursors.grabbing) : null,
       child: InteractiveViewer(
         transformationController: transformationController,
         maxScale: 5,
-        onInteractionEnd:
-            kIsWeb ? (_) => _updateCursor(SystemMouseCursors.grab) : null,
+        onInteractionEnd: kIsWeb ? (_) => _updateCursor(SystemMouseCursors.grab) : null,
         child: Center(
           child: PdfPreviewPage(
             pageData: pages[preview!],
@@ -336,9 +329,7 @@ class PdfPreviewCustomState extends State<PdfPreviewCustom>
       page = _zoomPreview();
     } else {
       page = Container(
-        constraints: widget.maxPageWidth != null
-            ? BoxConstraints(maxWidth: widget.maxPageWidth!)
-            : null,
+        constraints: widget.maxPageWidth != null ? BoxConstraints(maxWidth: widget.maxPageWidth!) : null,
         child: _createPreview(),
       );
 
