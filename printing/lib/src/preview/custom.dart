@@ -55,6 +55,7 @@ class PdfPreviewCustom extends StatefulWidget {
     this.pagesBuilder,
     this.enableScrollToPage = false,
     this.isOnTap = true,
+    this.isZoom = false,
     this.onZoomChanged,
   });
 
@@ -111,6 +112,7 @@ class PdfPreviewCustom extends StatefulWidget {
   /// Whether scroll to page functionality enabled.
   final bool enableScrollToPage;
   final bool isOnTap;
+  final bool isZoom;
 
   /// The zoom mode has changed
   final ValueChanged<bool>? onZoomChanged;
@@ -240,23 +242,28 @@ class PdfPreviewCustomState extends State<PdfPreviewCustom> with PdfPreviewRaste
       return widget.pagesBuilder!(context, pages);
     }
 
-    Widget pageWidget(int index, {Key? key}) => GestureDetector(
-          onDoubleTap: widget.isOnTap
-              ? () {
-                  setState(() {
-                    updatePosition = scrollController.position.pixels;
-                    preview = index;
-                    transformationController.value.setIdentity();
-                    _updateCursor(SystemMouseCursors.grab);
-                  });
-                  _zoomChanged();
-                }
-              : null,
-          child: PdfPreviewPage(
-            key: key,
-            pageData: pages[index],
-            pdfPreviewPageDecoration: widget.pdfPreviewPageDecoration,
-            pageMargin: widget.previewPageMargin,
+    Widget pageWidget(int index, {Key? key}) => InteractiveViewer(
+          scaleEnabled: widget.isZoom,
+          minScale: 0.5,
+          maxScale: 5,
+          child: GestureDetector(
+            onDoubleTap: widget.isOnTap
+                ? () {
+                    setState(() {
+                      updatePosition = scrollController.position.pixels;
+                      preview = index;
+                      transformationController.value.setIdentity();
+                      _updateCursor(SystemMouseCursors.grab);
+                    });
+                    _zoomChanged();
+                  }
+                : null,
+            child: PdfPreviewPage(
+              key: key,
+              pageData: pages[index],
+              pdfPreviewPageDecoration: widget.pdfPreviewPageDecoration,
+              pageMargin: widget.previewPageMargin,
+            ),
           ),
         );
 

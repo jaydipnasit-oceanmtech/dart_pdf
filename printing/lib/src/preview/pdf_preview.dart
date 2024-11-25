@@ -66,6 +66,7 @@ class PdfPreview extends StatefulWidget {
     this.actionBarTheme = const PdfActionBarTheme(),
     this.enableScrollToPage = false,
     this.isOnTap = true,
+    this.isZoom = false,
     this.onZoomChanged,
   }) : _pagesBuilder = null;
 
@@ -127,6 +128,7 @@ class PdfPreview extends StatefulWidget {
     required CustomPdfPagesBuilder pagesBuilder,
     this.enableScrollToPage = false,
     this.isOnTap = true,
+    this.isZoom = false,
     this.onZoomChanged,
   }) : _pagesBuilder = pagesBuilder;
 
@@ -162,6 +164,7 @@ class PdfPreview extends StatefulWidget {
   /// Add a switch to show debug view
   final bool canDebug;
   final bool isOnTap;
+  final bool isZoom;
 
   /// Additional actions to add to the widget
   final List<Widget>? actions;
@@ -418,7 +421,7 @@ class PdfPreviewState extends State<PdfPreview> {
                   dpi: widget.dpi,
                   enableScrollToPage: widget.enableScrollToPage,
                   onZoomChanged: widget.onZoomChanged,
-                  isOnTap: widget.isOnTap,
+                  isOnTap: widget.isZoom,
                 );
               },
             ),
