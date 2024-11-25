@@ -65,6 +65,7 @@ class PdfPreview extends StatefulWidget {
     this.dpi,
     this.actionBarTheme = const PdfActionBarTheme(),
     this.enableScrollToPage = false,
+    this.isOnTap = true,
     this.onZoomChanged,
   }) : _pagesBuilder = null;
 
@@ -125,6 +126,7 @@ class PdfPreview extends StatefulWidget {
     this.actionBarTheme = const PdfActionBarTheme(),
     required CustomPdfPagesBuilder pagesBuilder,
     this.enableScrollToPage = false,
+    this.isOnTap = true,
     this.onZoomChanged,
   }) : _pagesBuilder = pagesBuilder;
 
@@ -159,6 +161,7 @@ class PdfPreview extends StatefulWidget {
 
   /// Add a switch to show debug view
   final bool canDebug;
+  final bool isOnTap;
 
   /// Additional actions to add to the widget
   final List<Widget>? actions;
@@ -274,9 +277,7 @@ class PdfPreviewState extends State<PdfPreview> {
   void initState() {
     previewData = PdfPreviewData(
       buildDocument: widget.build,
-      pageFormats: widget.pageFormats.isNotEmpty
-          ? widget.pageFormats
-          : PdfPreview._defaultPageFormats,
+      pageFormats: widget.pageFormats.isNotEmpty ? widget.pageFormats : PdfPreview._defaultPageFormats,
       initialPageFormat: widget.initialPageFormat,
       onComputeActualPageFormat: computeActualPageFormat,
     );
@@ -299,14 +300,10 @@ class PdfPreviewState extends State<PdfPreview> {
 
   @override
   void didUpdateWidget(covariant PdfPreview oldWidget) {
-    if (oldWidget.build != widget.build ||
-        widget.shouldRepaint ||
-        widget.pageFormats != oldWidget.pageFormats) {
+    if (oldWidget.build != widget.build || widget.shouldRepaint || widget.pageFormats != oldWidget.pageFormats) {
       previewData = PdfPreviewData(
         buildDocument: widget.build,
-        pageFormats: widget.pageFormats.isNotEmpty
-            ? widget.pageFormats
-            : PdfPreview._defaultPageFormats,
+        pageFormats: widget.pageFormats.isNotEmpty ? widget.pageFormats : PdfPreview._defaultPageFormats,
         initialPageFormat: previewData.pageFormat,
         onComputeActualPageFormat: computeActualPageFormat,
       );
@@ -343,12 +340,8 @@ class PdfPreviewState extends State<PdfPreview> {
         PdfPrintAction(
           jobName: widget.pdfFileName,
           dynamicLayout: widget.dynamicLayout,
-          onPrinted: widget.onPrinted == null
-              ? null
-              : () => widget.onPrinted!(context),
-          onPrintError: widget.onPrintError == null
-              ? null
-              : (dynamic error) => widget.onPrintError!(context, error),
+          onPrinted: widget.onPrinted == null ? null : () => widget.onPrinted!(context),
+          onPrintError: widget.onPrintError == null ? null : (dynamic error) => widget.onPrintError!(context, error),
         ),
       );
     }
@@ -357,9 +350,7 @@ class PdfPreviewState extends State<PdfPreview> {
       actions.add(
         PdfShareAction(
           filename: widget.pdfFileName,
-          onShared: widget.onPrinted == null
-              ? null
-              : () => widget.onPrinted!(context),
+          onShared: widget.onPrinted == null ? null : () => widget.onPrinted!(context),
           subject: widget.shareActionExtraSubject,
           emails: widget.shareActionExtraEmails,
           body: widget.shareActionExtraBody,
@@ -427,6 +418,7 @@ class PdfPreviewState extends State<PdfPreview> {
                   dpi: widget.dpi,
                   enableScrollToPage: widget.enableScrollToPage,
                   onZoomChanged: widget.onZoomChanged,
+                  isOnTap: widget.isOnTap,
                 );
               },
             ),
@@ -438,8 +430,7 @@ class PdfPreviewState extends State<PdfPreview> {
               ),
               child: Material(
                 elevation: widget.actionBarTheme.elevation,
-                color:
-                    widget.actionBarTheme.backgroundColor ?? theme.primaryColor,
+                color: widget.actionBarTheme.backgroundColor ?? theme.primaryColor,
                 textStyle: widget.actionBarTheme.textStyle,
                 child: SizedBox(
                   width: double.infinity,
@@ -449,8 +440,7 @@ class PdfPreviewState extends State<PdfPreview> {
                       spacing: widget.actionBarTheme.actionSpacing,
                       alignment: widget.actionBarTheme.alignment,
                       runAlignment: widget.actionBarTheme.runAlignment,
-                      crossAxisAlignment:
-                          widget.actionBarTheme.crossAxisAlignment,
+                      crossAxisAlignment: widget.actionBarTheme.crossAxisAlignment,
                       children: actions,
                     ),
                   ),

@@ -54,6 +54,7 @@ class PdfPreviewCustom extends StatefulWidget {
     this.shrinkWrap = false,
     this.pagesBuilder,
     this.enableScrollToPage = false,
+    this.isOnTap = true,
     this.onZoomChanged,
   });
 
@@ -109,6 +110,7 @@ class PdfPreviewCustom extends StatefulWidget {
 
   /// Whether scroll to page functionality enabled.
   final bool enableScrollToPage;
+  final bool isOnTap;
 
   /// The zoom mode has changed
   final ValueChanged<bool>? onZoomChanged;
@@ -239,15 +241,17 @@ class PdfPreviewCustomState extends State<PdfPreviewCustom> with PdfPreviewRaste
     }
 
     Widget pageWidget(int index, {Key? key}) => GestureDetector(
-          // onDoubleTap: () {
-          //   // setState(() {
-          //   //   updatePosition = scrollController.position.pixels;
-          //   //   preview = index;
-          //   //   transformationController.value.setIdentity();
-          //   //   _updateCursor(SystemMouseCursors.grab);
-          //   // });
-          //   // _zoomChanged();
-          // },
+          onDoubleTap: widget.isOnTap
+              ? () {
+                  setState(() {
+                    updatePosition = scrollController.position.pixels;
+                    preview = index;
+                    transformationController.value.setIdentity();
+                    _updateCursor(SystemMouseCursors.grab);
+                  });
+                  _zoomChanged();
+                }
+              : null,
           child: PdfPreviewPage(
             key: key,
             pageData: pages[index],
@@ -283,13 +287,15 @@ class PdfPreviewCustomState extends State<PdfPreviewCustom> with PdfPreviewRaste
 
   Widget _zoomPreview() {
     final zoomPreview = GestureDetector(
-      // onDoubleTap: () {
-      //   setState(() {
-      //     preview = null;
-      //     _updateCursor(MouseCursor.defer);
-      //   });
-      //   _zoomChanged();
-      // },
+      onDoubleTap: widget.isOnTap
+          ? () {
+              setState(() {
+                preview = null;
+                _updateCursor(MouseCursor.defer);
+              });
+              _zoomChanged();
+            }
+          : null,
       onLongPressCancel: kIsWeb ? () => _updateCursor(SystemMouseCursors.grab) : null,
       onLongPressDown: kIsWeb ? (_) => _updateCursor(SystemMouseCursors.grabbing) : null,
       child: InteractiveViewer(
